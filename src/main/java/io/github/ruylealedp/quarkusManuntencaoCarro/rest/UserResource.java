@@ -47,7 +47,10 @@ public class UserResource{
         user.setEmail(userRequest.getEmail());
         user.setIdade(userRequest.getIdade());
         repository.persist(user);
-        return Response.ok(user).build();
+        return Response
+                .status(Response.Status.CREATED.getStatusCode())
+                .entity(user)
+                .build();
     }
     @GET
     public Response ListAllUser() {

@@ -46,7 +46,10 @@ public class ReparoResource {
         reparo.setValorServico(reparoRequest.getValorServico());
         reparo.setDataServico(reparoRequest.getDataServico());
         repositorio.persist(reparo);
-        return Response.ok(reparo).build();
+        return Response
+                .status(Response.Status.CREATED.getStatusCode())
+                .entity(reparo)
+                .build();
     }
 
     @GET

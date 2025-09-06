@@ -3,6 +3,7 @@ package io.github.ruylealedp.quarkusManuntencaoCarro.domain.model;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -15,11 +16,11 @@ public class Abastecimento extends PanacheEntityBase {
     @Column(name = "nomePosto", nullable = false)
     private String nomePosto;
     @Column(name="litros", nullable = false)
-    private double litros;
+    private BigDecimal litros;
     @Column(name = "valorGasto", nullable = false)
-    private double valorGasto;
+    private BigDecimal valorGasto;
     @Column(name = "kmPercorrido", nullable = false)
-    private double kmPercorrido;
+    private BigDecimal kmPercorrido;
 
     public Long getId() {
         return id;
@@ -37,27 +38,27 @@ public class Abastecimento extends PanacheEntityBase {
         this.nomePosto = nomePosto;
     }
 
-    public double getLitros() {
+    public BigDecimal getLitros() {
         return litros;
     }
 
-    public void setLitros(double litros) {
+    public void setLitros(BigDecimal litros) {
         this.litros = litros;
     }
 
-    public double getValorGasto() {
+    public BigDecimal getValorGasto() {
         return valorGasto;
     }
 
-    public void setValorGasto(double valorGasto) {
+    public void setValorGasto(BigDecimal valorGasto) {
         this.valorGasto = valorGasto;
     }
 
-    public double getKmPercorrido() {
+    public BigDecimal getKmPercorrido() {
         return kmPercorrido;
     }
 
-    public void setKmPercorrido(double kmPercorrido) {
+    public void setKmPercorrido(BigDecimal kmPercorrido) {
         this.kmPercorrido = kmPercorrido;
     }
 
@@ -65,7 +66,7 @@ public class Abastecimento extends PanacheEntityBase {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Abastecimento that = (Abastecimento) o;
-        return Double.compare(litros, that.litros) == 0 && Double.compare(valorGasto, that.valorGasto) == 0 && Double.compare(kmPercorrido, that.kmPercorrido) == 0 && Objects.equals(id, that.id) && Objects.equals(nomePosto, that.nomePosto);
+        return Objects.equals(id, that.id) && Objects.equals(nomePosto, that.nomePosto) && Objects.equals(litros, that.litros) && Objects.equals(valorGasto, that.valorGasto) && Objects.equals(kmPercorrido, that.kmPercorrido);
     }
 
     @Override

@@ -33,10 +33,12 @@ public class AbastecimentoResource {
     }
     @POST
     public Response createAbastecimento(CreateAbastecimentoRequest abastecimentoRequest) {
+
         Set<ConstraintViolation<CreateAbastecimentoRequest>> violations = validator.validate(abastecimentoRequest);
         if(!violations.isEmpty()){
-            ResponseError responseError = ResponseError.createFromValidation(violations);
-            return Response.status(400).entity(responseError).build();
+            return ResponseError
+                    .createFromValidation(violations)
+                    .withStatusCode(ResponseError.UNPROCESSABLE_ENTITY_STATUS);
         }
         Abastecimento abastecimento = new Abastecimento();
         abastecimento.setNomePosto(abastecimentoRequest.getNomePosto());
@@ -44,7 +46,10 @@ public class AbastecimentoResource {
         abastecimento.setValorGasto(abastecimentoRequest.getValorGasto());
         abastecimento.setKmPercorrido(abastecimentoRequest.getKmPercorrido());
         repositorio.persist(abastecimento);
-        return Response.ok(abastecimento).build();
+        return Response
+                .status(Response.Status.CREATED.getStatusCode())
+                .entity(abastecimento)
+                .build();
     }
 
     @GET
@@ -64,7 +69,7 @@ public class AbastecimentoResource {
 
         if (abastecimento != null) {
             abastecimento.delete();
-            return Response.ok().build();
+            return Response.noContent().build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -80,7 +85,7 @@ public class AbastecimentoResource {
         abastecimento.setLitros(AbastecimentoData.getLitros());
         abastecimento.setValorGasto(AbastecimentoData.getValorGasto());
         abastecimento.setKmPercorrido(AbastecimentoData.getKmPercorrido());
-        return Response.ok(abastecimento).build();
+        return Response.noContent().build();
 
 
     }
