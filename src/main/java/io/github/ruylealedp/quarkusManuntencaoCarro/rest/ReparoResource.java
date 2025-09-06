@@ -3,8 +3,9 @@ package io.github.ruylealedp.quarkusManuntencaoCarro.rest;
 import io.github.ruylealedp.quarkusManuntencaoCarro.domain.model.Reparo;
 import io.github.ruylealedp.quarkusManuntencaoCarro.domain.model.domain.repositorio.ReparoRepository;
 import io.github.ruylealedp.quarkusManuntencaoCarro.rest.dto.CreateReparoRequest;
-import io.github.ruylealedp.quarkusManuntencaoCarro.rest.dto.CreateUserRequest;
+import io.github.ruylealedp.quarkusManuntencaoCarro.rest.dto.ResponseError;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
@@ -32,14 +33,11 @@ public class ReparoResource {
     }
 
     @POST
-
-
     public Response createReparo(CreateReparoRequest reparoRequest) {
         Set<ConstraintViolation<CreateReparoRequest>> violations = validator.validate(reparoRequest);
         if(!violations.isEmpty()){
-            ConstraintViolation<CreateReparoRequest> erro = violations.stream().findAny().get();
-            String errorMessage = erro.getMessage();
-            return Response.status(400).entity(errorMessage).build();
+            ResponseError responseError = ResponseError.createFromValidation(violations);
+            return Response.status(400).entity(responseError).build();
         }
 
         Reparo reparo = new Reparo();

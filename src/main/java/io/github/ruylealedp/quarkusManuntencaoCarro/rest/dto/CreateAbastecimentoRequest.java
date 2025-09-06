@@ -1,12 +1,18 @@
 package io.github.ruylealedp.quarkusManuntencaoCarro.rest.dto;
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class CreateAbastecimentoRequest {
 
+    @NotBlank(message="Preenchimento obrigatorio")
     private String nomePosto;
+    @NotNull(message="Preenchimento obrigatorio")
     private double litros;
+    @NotNull(message="Preenchimento obrigatorio")
     private double valorGasto;
+    @NotNull(message="Preenchimento obrigatorio")
     private double kmPercorrido;
 
     public String getNomePosto() {
