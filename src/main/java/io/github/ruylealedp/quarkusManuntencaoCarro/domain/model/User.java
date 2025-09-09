@@ -1,8 +1,6 @@
 package io.github.ruylealedp.quarkusManuntencaoCarro.domain.model;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-
 import java.util.Objects;
 
 @Entity
@@ -12,11 +10,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name="nome", nullable = false)
     private String nome;
-    @Column(name = "email", nullable = false)
     private String email;
-    @Column(name="idade", nullable = false)
     private int idade;
 
     public int getIdade() {

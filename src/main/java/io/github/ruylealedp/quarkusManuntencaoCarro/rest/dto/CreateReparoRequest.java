@@ -1,52 +1,36 @@
 package io.github.ruylealedp.quarkusManuntencaoCarro.rest.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class CreateReparoRequest {
 
-    @NotBlank(message="Preenchimento obrigatorio")
+    @NotBlank(message = "O campo 'mecanico' é obrigatório")
     private String mecanico;
-    @NotBlank(message="Preenchimento obrigatorio")
+
+    @NotBlank(message = "O campo 'servico' é obrigatório")
     private String servico;
-    @NotNull(message="Preenchimento obrigatorio")
+
+    @NotNull(message = "O campo 'valorServico' é obrigatório")
     private BigDecimal valorServico;
-    @NotNull(message="Preenchimento obrigatorio")
+
+    @NotNull(message = "O campo 'dataServico' é obrigatório")
     private LocalDate dataServico;
 
-    public String getMecanico() {
-        return mecanico;
-    }
+    private List<CreateDescricaoRequest> descricoes;
 
-    public void setMecanico(String mecanico) {
-        this.mecanico = mecanico;
-    }
-
-    public String getServico() {
-        return servico;
-    }
-
-    public void setServico(String servico) {
-        this.servico = servico;
-    }
-
-    public BigDecimal getValorServico() {
-        return valorServico;
-    }
-
-    public void setValorServico(BigDecimal valorServico) {
-        this.valorServico = valorServico;
-    }
-
-    public LocalDate getDataServico() {
-        return dataServico;
-    }
-
-    public void setDataServico(LocalDate dataServico) {
-        this.dataServico = dataServico;
-    }
+    // Getters e Setters
+    public String getMecanico() { return mecanico; }
+    public void setMecanico(String mecanico) { this.mecanico = mecanico; }
+    public String getServico() { return servico; }
+    public void setServico(String servico) { this.servico = servico; }
+    public BigDecimal getValorServico() { return valorServico; }
+    public void setValorServico(BigDecimal valorServico) { this.valorServico = valorServico; }
+    public LocalDate getDataServico() { return dataServico; }
+    public void setDataServico(LocalDate dataServico) { this.dataServico = dataServico; }
+    public List<CreateDescricaoRequest> getDescricoes() { return descricoes; }
+    public void setDescricoes(List<CreateDescricaoRequest> descricoes) { this.descricoes = descricoes; }
 }

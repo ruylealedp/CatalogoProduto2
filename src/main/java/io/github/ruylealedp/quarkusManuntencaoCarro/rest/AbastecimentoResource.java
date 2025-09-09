@@ -55,7 +55,7 @@ public class AbastecimentoResource {
     @GET
 
     public Response ListAllAbastecimento() {
-        PanacheQuery<PanacheEntityBase> query = Abastecimento.findAll();
+        PanacheQuery<Abastecimento> query = repositorio.findAll();
 
         return Response.ok(query.list()).build();
     }
@@ -65,10 +65,10 @@ public class AbastecimentoResource {
     @Path("{id}")
 
     public Response deleteAbastecimento(@PathParam("id") Long id) {
-        Abastecimento abastecimento = Abastecimento.findById(id);
+        Abastecimento abastecimento = repositorio.findById(id);
 
         if (abastecimento != null) {
-            abastecimento.delete();
+            repositorio.delete(abastecimento);
             return Response.noContent().build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -79,12 +79,13 @@ public class AbastecimentoResource {
     @Path("{id}")
 
     public Response updateAbastecimento(@PathParam("id") Long id, CreateAbastecimentoRequest AbastecimentoData) {
-        Abastecimento abastecimento = Abastecimento.findById(id);
+        Abastecimento abastecimento = repositorio.findById(id);
         if (abastecimento != null) {
         abastecimento.setNomePosto(AbastecimentoData.getNomePosto());
         abastecimento.setLitros(AbastecimentoData.getLitros());
         abastecimento.setValorGasto(AbastecimentoData.getValorGasto());
         abastecimento.setKmPercorrido(AbastecimentoData.getKmPercorrido());
+        repositorio.persist(abastecimento);
         return Response.noContent().build();
 
 

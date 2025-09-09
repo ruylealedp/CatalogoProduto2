@@ -2,24 +2,21 @@ package io.github.ruylealedp.quarkusManuntencaoCarro.domain.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
 @Table(name="ABASTECIMENTO")
-public class Abastecimento extends PanacheEntityBase {
+public class Abastecimento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "nomePosto", nullable = false)
     private String nomePosto;
-    @Column(name="litros", nullable = false)
     private BigDecimal litros;
-    @Column(name = "valorGasto", nullable = false)
     private BigDecimal valorGasto;
-    @Column(name = "kmPercorrido", nullable = false)
     private BigDecimal kmPercorrido;
 
     public Long getId() {

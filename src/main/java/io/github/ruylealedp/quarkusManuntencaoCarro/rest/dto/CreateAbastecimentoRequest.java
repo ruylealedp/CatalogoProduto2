@@ -1,11 +1,11 @@
 package io.github.ruylealedp.quarkusManuntencaoCarro.rest.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
 import java.math.BigDecimal;
+
+
 
 public class CreateAbastecimentoRequest {
 
@@ -26,6 +26,7 @@ public class CreateAbastecimentoRequest {
     @NotNull(message = "Km percorrido é obrigatório.")
     @DecimalMin(value = "1.0", message = "A distância percorrida precisa ser preenchida.")
     private BigDecimal kmPercorrido;
+
 
     public String getNomePosto() {
         return nomePosto;
