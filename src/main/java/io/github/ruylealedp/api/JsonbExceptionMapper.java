@@ -20,7 +20,7 @@ public class JsonbExceptionMapper implements ExceptionMapper<JsonbException> {
         System.err.println("Erro de parseamento JSON: " + exception.getMessage());
         exception.printStackTrace();
 
-        // Constrói uma resposta com status 400 e uma mensagem amigável.
+        // resposta com status 400
         return Response
                 .status(Response.Status.BAD_REQUEST)
                 .entity("Todos os campos devem ser preenchidos..")
