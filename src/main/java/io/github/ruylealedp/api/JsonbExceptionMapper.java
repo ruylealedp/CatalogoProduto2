@@ -5,12 +5,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
-/**
- * Este provedor de JAX-RS mapeia exceções de parseamento JSON
- * (JsonbException) para uma resposta HTTP 400 Bad Request.
- * Isso garante que o cliente receba uma mensagem de erro clara
- * quando a requisição contiver um JSON malformado.
- */
+
 @Provider
 public class JsonbExceptionMapper implements ExceptionMapper<JsonbException> {
 

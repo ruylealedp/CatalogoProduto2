@@ -17,7 +17,7 @@ public class Produto {
     @NotBlank(message = "O campo deve ser preenchido")
     private String descricao;
     @NotNull(message = "O preço não pode ser nulo")
-    @DecimalMin(value = "0.01", message = "É de graça? Preencha o valor da mercadoria corretamente?")
+    @DecimalMin(value = "0.01", message = "Preencha o valor da mercadoria corretamente!")
     private BigDecimal preco;
 
     public Produto() {

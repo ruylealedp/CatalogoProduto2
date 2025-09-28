@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+import io.quarkus.cache.CacheResult;
+import io.quarkus.cache.CacheInvalidate;
+
 @Path("/produtos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -19,17 +23,31 @@ public class ProdutoResource {
     // Simulação de banco de dados em memória
     private static List<Produto> produtos = new ArrayList<>();
 
+    // 1. Estrutura Estática para rastrear a última operação de cache.
+    private static class LastCacheOperation {
+        // Status pode ser: "NENHUMA", "CACHE MISS", "CACHE INVALIDATE"
+        public String status = "NENHUMA";
+        public String targetId = "N/A";
+
+        // Método para retornar o log em formato JSON
+        public String toJson() {
+            return String.format("{\"last_operation_status\": \"%s\", \"target_id\": \"%s\"}", status, targetId);
+        }
+    }
+
+    // Instância estática para armazenar o estado global do cache
+    private static LastCacheOperation cacheLog = new LastCacheOperation();
+
 
     @GET
     @RolesAllowed({"admin", "user"})
     public List<ProdutoResponseDTO> listarProdutos() {
-        // Mapeia cada Produto para um ProdutoResponseDTO com a ordem especificada
         return produtos.stream()
                 .map(produto -> new ProdutoResponseDTO(
                         produto.getNome(),
                         produto.getPreco(),
                         produto.getDescricao(),
-                        produto.getId() // Inclui o ID na resposta do DTO
+                        produto.getId()
                 ))
                 .collect(Collectors.toList());
     }
@@ -37,28 +55,42 @@ public class ProdutoResource {
     @GET
     @Path("/{id}")
     @RolesAllowed({"admin", "user"})
+    @CacheResult(cacheName = "produto-cache")
     public Response buscarProduto(@PathParam("id") String id) {
         Optional<Produto> produtoOptional = produtos.stream()
                 .filter(p -> p.getId().equals(id))
                 .findFirst();
 
-        // Se encontrado, retorna o DTO com a ordem e o ID
-        return produtoOptional.map(produto -> Response.ok(new ProdutoResponseDTO(
-                        produto.getNome(),
-                        produto.getPreco(),
-                        produto.getDescricao(),
-                        produto.getId()
-                )))
+        // 2. Se o método é executado (Cache Miss) e o produto é encontrado:
+        // Registra CACHE MISS e o ID.
+        return produtoOptional.map(produto -> {
+                    // Este bloco SÓ é executado em caso de Cache MISS
+                    cacheLog.status = "CACHE MISS";
+                    cacheLog.targetId = id;
+
+                    return Response.ok(new ProdutoResponseDTO(
+                            produto.getNome(),
+                            produto.getPreco(),
+                            produto.getDescricao(),
+                            produto.getId()
+                    ));
+                })
                 .orElse(Response.status(Response.Status.NOT_FOUND))
                 .build();
+    }
+
+    @GET
+    @Path("/cache/log")
+    @RolesAllowed({"admin", "user"})
+    public Response getCacheLog() {
+        // 3. Retorna o JSON contendo o status e o ID da última operação
+        return Response.ok(cacheLog.toJson()).build();
     }
 
     @POST
     @RolesAllowed("admin")
     public Response criarProduto(@Valid Produto produto) {
-        // O ID é gerado automaticamente pelo construtor de Produto
         produtos.add(produto);
-        // Retorna o produto criado (com o ID gerado e campos na ordem correta)
         return Response.status(Response.Status.CREATED).entity(new ProdutoResponseDTO(
                 produto.getNome(),
                 produto.getPreco(),
@@ -70,13 +102,18 @@ public class ProdutoResource {
     @PUT
     @Path("/{id}")
     @RolesAllowed("admin")
+    // Invalida o cache do produto atualizado
+    @CacheInvalidate(cacheName = "produto-cache")
     public Response atualizarProduto(@PathParam("id") String id, @Valid Produto produtoAtualizado) {
         for (int i = 0; i < produtos.size(); i++) {
             if (produtos.get(i).getId().equals(id)) {
-                // Garante que o ID não mude e mantém o ID original do produto
                 produtoAtualizado.setId(id);
                 produtos.set(i, produtoAtualizado);
-                // Retorna o produto atualizado (com o ID original e campos na ordem correta)
+
+                // 4. Se a atualização for bem-sucedida, registra CACHE INVALIDATE
+                cacheLog.status = "CACHE INVALIDATE";
+                cacheLog.targetId = id;
+
                 return Response.ok(new ProdutoResponseDTO(
                         produtoAtualizado.getNome(),
                         produtoAtualizado.getPreco(),
@@ -91,9 +128,15 @@ public class ProdutoResource {
     @DELETE
     @Path("/{id}")
     @RolesAllowed("admin")
+    // Invalida o cache do produto removido
+    @CacheInvalidate(cacheName = "produto-cache")
     public Response excluirProduto(@PathParam("id") String id) {
         boolean removido = produtos.removeIf(p -> p.getId().equals(id));
         if (removido) {
+            // 5. Se a remoção for bem-sucedida, registra CACHE INVALIDATE
+            cacheLog.status = "CACHE INVALIDATE";
+            cacheLog.targetId = id;
+
             return Response.noContent().build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
