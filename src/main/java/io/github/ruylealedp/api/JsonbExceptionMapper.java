@@ -16,6 +16,7 @@ public class JsonbExceptionMapper implements ExceptionMapper<JsonbException> {
         exception.printStackTrace();
 
         // resposta com status 400
+        // .
         return Response
                 .status(Response.Status.BAD_REQUEST)
                 .entity("Todos os campos devem ser preenchidos..")
